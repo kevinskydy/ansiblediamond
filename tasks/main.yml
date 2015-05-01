@@ -14,9 +14,13 @@
   register: checkdiamondprocess
   ignore_errors: true
 
+# Install from pip
+- include: setup-Debian-pip.yml
+  when: ansible_os_family == 'Debian' and install_from_pip == true
+
 # Install prebuilt diamond on Debian
 - include: setup-Debian-bin.yml
-  when: ansible_os_family == 'Debian' and build_from_source == false
+  when: ansible_os_family == 'Debian' and build_from_source == false and install_from_pip == false
 
 # Build Diamond from source
 - include: setup-Debian-source.yml
@@ -28,9 +32,19 @@
 
 # Common for both OS's
 
-- name: Update diamond.conf with latest template content
+- name: Update diamond.conf with latest template content (pip)
+  template: src=diamond-pip.conf dest="{{diamond_conf_basepath}}/diamond.conf" backup=yes
+  register: diamondconffilestate
+  when: install_from_pip == true
+  tags:
+    - diamond_conf
+
+- name: Update diamond.conf with latest template content (default)
   template: src=diamond.conf dest="{{diamond_conf_basepath}}/" backup=yes
   register: diamondconffilestate
+  when: install_from_pip == false
+  tags:
+    - diamond_conf
 
 - name: Configuring collector {{item.key}}
   template: src=diamondcollectorconf.j2 dest="{{collector_conf_path}}/{{item.key}}.conf"
