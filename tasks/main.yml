@@ -46,6 +46,24 @@
   tags:
     - diamond_conf
 
+###
+# The following is currently deprecated.
+# Leaving this for Ansible 2.x.
+# Will do explicit checks for each known collector instead.
+###
+#- include: collectors/{{ item.key }}.yml
+#  with_dict: diamond_collector_default_defs
+#  when: "item.key not in diamond_collector_extra_defs.keys() and item.enabled"
+#- include: collectors/{{ item.key }}.yml
+#  with_dict: diamond_collector_extra_defs
+
+# NginxCollector
+- name: Configure NginxCollector
+  include: collectors/NginxCollector.yml
+  when: "'NginxCollector' in diamond_collector_extra_defs.keys() and diamond_collector_extra_defs.NginxCollector.enabled"
+  tags:
+    - NginxCollector
+
 - name: Configuring collector {{item.key}}
   template: src=diamondcollectorconf.j2 dest="{{collector_conf_path}}/{{item.key}}.conf"
   with_dict: diamond_collector_default_defs

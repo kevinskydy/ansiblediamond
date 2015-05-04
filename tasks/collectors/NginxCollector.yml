@@ -1,0 +1,14 @@
+- name: Add Nginx config with stub_status
+  template: >
+    src={{ role_path }}/templates/NginxCollector/nginx-status.conf
+    dest=/etc/nginx/sites-available/status
+
+- name: Create symlink to config
+  file: >
+    path=/etc/nginx/sites-enabled/status
+    src=/etc/nginx/sites-available/status
+    state=link
+
+- name: Reload Nginx
+  command: service nginx reload
+
