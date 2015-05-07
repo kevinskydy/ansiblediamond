@@ -57,13 +57,6 @@
 #- include: collectors/{{ item.key }}.yml
 #  with_dict: diamond_collector_extra_defs
 
-# NginxCollector
-- name: Configure NginxCollector
-  include: collectors/NginxCollector.yml
-  when: "'NginxCollector' in diamond_collector_extra_defs.keys() and diamond_collector_extra_defs.NginxCollector.enabled"
-  tags:
-    - NginxCollector
-
 - name: Configuring collector {{item.key}}
   template: src=diamondcollectorconf.j2 dest="{{collector_conf_path}}/{{item.key}}.conf"
   with_dict: diamond_collector_default_defs
@@ -74,6 +67,20 @@
   template: src=diamondcollectorconf.j2 dest="{{collector_conf_path}}/{{item.key}}.conf"
   with_dict: diamond_collector_extra_defs
   register: extradiamondcollectorsstate
+
+# NginxCollector
+- name: Configure NginxCollector
+  include: collectors/NginxCollector.yml
+  when: "'NginxCollector' in diamond_collector_extra_defs.keys() and diamond_collector_extra_defs.NginxCollector.enabled"
+  tags:
+    - NginxCollector
+
+# S3BucketCollector
+- name: Configure S3BucketCollector
+  include: collectors/S3BucketCollector.yml
+  when: "'S3BucketCollector' in diamond_collector_extra_defs.keys() and diamond_collector_extra_defs.S3BucketCollector.enabled"
+  tags:
+    - S3BucketCollector
 
 - name: Restart diamond if config has changed
   service: name=diamond state=restarted

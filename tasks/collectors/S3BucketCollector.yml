@@ -1,0 +1,5 @@
+---
+- name: copy config template
+  template: >
+    src={{ role_path }}/templates/S3BucketCollector/S3BucketCollector.conf
+    dest=/etc/diamond/collectors/S3BucketCollector.conf
