@@ -1,4 +1,7 @@
 ---
+- name: install boto
+  pip: name=boto
+
 - name: copy config template
   template: >
     src={{ role_path }}/templates/S3BucketCollector/S3BucketCollector.conf

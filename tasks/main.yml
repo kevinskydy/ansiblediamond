@@ -14,6 +14,16 @@
   register: checkdiamondprocess
   ignore_errors: true
 
+- name: Fetch get-pip.py
+  get_url: url=https://bootstrap.pypa.io/get-pip.py dest=/tmp/get-pip.py
+  tags:
+    - pip
+
+- name: Install pip
+  command: python /tmp/get-pip.py
+  tags:
+    - pip
+
 # Install from pip
 - include: setup-Debian-pip.yml
   when: ansible_os_family == 'Debian' and install_from_pip == true
